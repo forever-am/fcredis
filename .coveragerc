@@ -1,0 +1,9 @@
+[run]
+source = fcredis,tests
+
+[report]
+omit =
+    setup.py
+
+exclude_lines =
+    if __name__ == .__main__.:
