@@ -25,5 +25,21 @@ print(users[5236871])
 users_without_salt = users.RedisUsers.from_url(os.environ["REDIS_URL"])
 print(users_without_salt[5236871])
 # {'name': 'Wang', 'kraken_public_api_key': '0301688cd6efd8a3084352865ffade534ba3e20c9e3a527b5eb1b57e80c6f802782966ff897ecfe4843b4817d2286a05b570b852ab51d6bde1b4bcd652c6a3d7e9ed8fb54db4ac89597b6df07153001a60f3', 'is_key_encrypted': True}
-
 ```
+
+Different types of data start with different prefix, for example, users use the user_id as identifier.
+While the real key in the database is with a prefix `USER:`.
+You can use the methods `to_json, from_json, to_dict` to convert all the user data into the format you want.
+
+```python
+print(users_without_salt.to_json())
+"""
+{
+  "USER:5236871": {
+    "is_key_encrypted": true,
+    "kraken_public_api_key": "0301fe555daf4016bfb1b952f4fb83aeba45c015d9ebb15980ad710bebe8323af24528d25e52c74698560d7c212034e822354500051b66b1e42653bf88bda8f42d3ea3411697809f7a098e19ef427fafb093",
+    "name": "Wang"
+  }
+}
+"""
+``` 
