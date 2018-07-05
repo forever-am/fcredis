@@ -6,7 +6,7 @@
     "user_id": 590082058
   },
   "USER:910081058": {
-    "active": true,
+    "active": false,
     "exchange": "kraken",
     "index": "CRC3",
     "user_id": 910081058

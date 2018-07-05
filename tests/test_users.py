@@ -1,12 +1,14 @@
-from unittest import TestCase
-from os import path
+from unittest import TestCase, mock
+import json
+from os import path, remove
 import fakeredis
 
 from fcredis.tag import UserInfoEnum
+from fcredis.base import RedisDB
 from fcredis import users
 
 
-class UsersTest(TestCase):
+class RedisUsersTest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user_id = 590082058
@@ -20,7 +22,7 @@ class UsersTest(TestCase):
 
     def setUp(self):
         self.db = fakeredis.FakeStrictRedis()
-        self.users = users.Users(self.db)
+        self.users = users.RedisUsers(self.db)
         self.addCleanup(self.db.flushall)
 
     def test_add_and_getitem(self):
@@ -34,9 +36,39 @@ class UsersTest(TestCase):
         self.users.from_json(self.json_filename)
         result = self.users.to_dict()
         expected_keys = {'USER:590082058', 'USER:910081058'}
-        assert expected_keys == result.keys()
+        assert expected_keys == result.keys() == set(self.users.keys)
+
+        filename = path.join(self.data_path, "users.json")
+        self.users.to_json(filename)
+        result_json = json.load(open(filename, "r"))
+        assert expected_keys == result_json.keys()
+        remove(filename)
+
+        s = self.users.to_json()
+        result_json_from_s = json.loads(s)
+        assert expected_keys == result_json_from_s.keys()
 
     def test_contains(self):
         self.users.from_json(self.json_filename)
         assert self.user_id in self.users
+
+    def test_iter_active_users(self):
+        self.users.from_json(self.json_filename)
+        active_users = list(self.users.iter_active_users())
+        assert [590082058] == active_users
+
+    @mock.patch("redis.from_url")
+    def test_from_url(self, mock_from_url):
+        url = "redis_url"
+        users.RedisUsers.from_url(url)
+        mock_from_url.assert_called_with(url)
+
+    def test_redis_db_keys(self):
+        redis_db = RedisDB(self.db)
+        redis_db.from_json(self.json_filename)
+        expected_keys = {
+            'USER:590082058', 'USER:910081058', 'ALLOC:2018-06-25'
+        }
+        assert expected_keys == set(redis_db.keys)
+
 

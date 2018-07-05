@@ -1,11 +1,8 @@
-import json
-
 from .base import RedisDB
 from .tag import UserInfoEnum
 
 
-class Users(RedisDB):
-    _prefix = "USER:"
+class RedisUsers(RedisDB):
 
     @property
     def keys(self):
@@ -13,13 +10,12 @@ class Users(RedisDB):
             lambda k: k.startswith(self._prefix), RedisDB.keys.fget(self)
         ))
 
-    def add(self, user_id, info=None):
-        info = info or {}
-        info[UserInfoEnum.USER_ID.lower()] = user_id
-        super(Users, self).add(user_id, info)
+    @property
+    def _prefix(self):
+        return "USER:"
 
     def iter_active_users(self):
-        for key in self.db.scan_iter():
+        for key in self.keys:
             info = self[key]
             if info.get(UserInfoEnum.ACTIVE.lower(), False):
-                yield int(key)
+                yield info[UserInfoEnum.USER_ID.lower()]

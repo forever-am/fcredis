@@ -47,7 +47,7 @@ class RedisDB(object):
         if filename:
             json.dump(result, open(filename, "w"), **kwargs)
         else:
-            json.dumps(result, **kwargs)
+            return json.dumps(result, **kwargs)
 
     def from_json(self, filename):
         result = json.load(open(filename, "r"))
