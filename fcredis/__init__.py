@@ -1,1 +1,1 @@
-from .tag import StrEnum, UserInfoEnum
+from .tag import StrEnum, UserInfoEnum, auto
