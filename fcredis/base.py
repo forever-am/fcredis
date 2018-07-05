@@ -31,7 +31,7 @@ class RedisDB(object):
     def __getitem__(self, user_id):
         result = self.db.get(self._key(user_id))
         if result:
-            return json.loads(result)
+            return json.loads(result.decode())
 
     def add(self, key, info=None):
         user_info = self[key] or {}
