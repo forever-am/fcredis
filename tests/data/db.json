@@ -1,0 +1,15 @@
+{
+  "USER:590082058": {
+    "active": true,
+    "exchange": "kraken",
+    "index": "CRC3",
+    "user_id": 590082058
+  },
+  "USER:910081058": {
+    "active": true,
+    "exchange": "kraken",
+    "index": "CRC3",
+    "user_id": 910081058
+  },
+  "ALLOC:2018-06-25": {}
+}

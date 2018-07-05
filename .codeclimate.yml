@@ -21,4 +21,3 @@ plugins:
     enabled: true
 exclude_patterns:
   - notebooks/
-  - setup.py

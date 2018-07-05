@@ -1,17 +1,19 @@
 from setuptools import find_packages
 from setuptools import setup
 
-with open("requirements.txt", "r") as f:
-    install_requires = [line.strip() for line in f.readlines()]
 
-with open("requirements-dev.txt", "r") as f:
-    dev_requires = [line.strip() for line in f.readlines()]
+def get_lines(filename):
+    with open(filename, "r") as f:
+        return [line.strip() for line in f.readlines()]
 
+
+install_requires = get_lines("requirements.txt")
+dev_requires = get_lines("requirements-dev.txt")
 
 setup(
-    name="",
+    name="fcredis",
     version='0.0.1',
-    description='Simple Merkle Tree',
+    description='Redis API for users and allocation',
     long_description="",
     classifiers=[
         "Intended Audience :: Developers",
@@ -25,7 +27,7 @@ setup(
     url='https://github.com/forever-am/fcredis',
     author='Alice Wang',
     author_email="alice.wang@forever-am.com",
-    keywords='merkle tree, blockchain',
+    keywords='database, redis',
     license="GNU v3",
     packages=find_packages(),
     include_package_data=False,
