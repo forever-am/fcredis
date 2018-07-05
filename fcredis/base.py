@@ -4,12 +4,12 @@ import redis
 
 class RedisDB(object):
 
-    def __init__(self, db):
+    def __init__(self, db, *args, **kwargs):
         self.db = db
 
     @classmethod
-    def from_url(cls, url):
-        return cls(redis.from_url(url))
+    def from_url(cls, url, *args, **kwargs):
+        return cls(redis.from_url(url), *args, **kwargs)
 
     @property
     def keys(self):
@@ -30,11 +30,11 @@ class RedisDB(object):
             key = key[len(self._prefix):]
         return key
 
-    def __contains__(self, user_id):
-        return self.db.exists(self._key_with_prefix(user_id))
+    def __contains__(self, key):
+        return self.db.exists(self._key_with_prefix(key))
 
-    def __getitem__(self, user_id):
-        result = self.db.get(self._key_with_prefix(user_id))
+    def __getitem__(self, key):
+        result = self.db.get(self._key_with_prefix(key))
         if result:
             return json.loads(result.decode())
 

@@ -12,6 +12,7 @@ class RedisUsersTest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user_id = 590082058
+        cls.salt = "tcj00jvuyJNuKC4T4Alu"
         cls.info = {
             UserInfoEnum.ACTIVE.lower(): True,
             UserInfoEnum.EXCHANGE.lower(): "kraken",
@@ -22,10 +23,10 @@ class RedisUsersTest(TestCase):
 
     def setUp(self):
         self.db = fakeredis.FakeStrictRedis()
-        self.users = users.RedisUsers(self.db)
+        self.users = users.RedisUsers(self.db, self.salt)
         self.addCleanup(self.db.flushall)
 
-    def test_add_and_getitem(self):
+    def test_add_and_get_key(self):
         self.users.add(self.user_id, self.info)
         assert self.info == self.users[self.user_id]
         assert self.info == \
@@ -59,9 +60,8 @@ class RedisUsersTest(TestCase):
     @mock.patch("redis.from_url")
     def test_from_url(self, mock_from_url):
         url = "redis_url"
-        for cls_ in [users.RedisUsers, RedisDB]:
-            cls_.from_url(url)
-            mock_from_url.assert_called_with(url)
+        users.RedisUsers.from_url(url, self.salt)
+        mock_from_url.assert_called_with(url)
 
     def test_redis_db_keys(self):
         redis_db = RedisDB(self.db)
@@ -70,3 +70,21 @@ class RedisUsersTest(TestCase):
             'USER:590082058', 'USER:910081058', 'ALLOC:2018-06-25'
         }
         assert expected_keys == set(redis_db.keys)
+
+    def test_add_and_get_sensitive_fields(self):
+        info = dict(self.info)
+        original_key = "123abc432"
+        info[UserInfoEnum.KRAKEN_PUBLIC_API_KEY.lower()] = original_key
+        self.users.add(self.user_id, info)
+        users_without_salt = users.RedisUsers(self.users.db)
+        info_encrypted = users_without_salt[self.user_id]
+        encrypted_key = \
+            info_encrypted[UserInfoEnum.KRAKEN_PUBLIC_API_KEY.lower()]
+        assert encrypted_key != original_key
+        assert info_encrypted[UserInfoEnum.IS_KEY_ENCRYPTED.lower()]
+
+        info_decrypted = self.users[self.user_id]
+        decrypted_key = \
+            info_decrypted[UserInfoEnum.KRAKEN_PUBLIC_API_KEY.lower()]
+        assert decrypted_key == original_key
+        assert not info_decrypted[UserInfoEnum.IS_KEY_ENCRYPTED.lower()]
