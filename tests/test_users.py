@@ -29,7 +29,7 @@ class RedisUsersTest(TestCase):
         self.users.add(self.user_id, self.info)
         assert self.info == self.users[self.user_id]
         assert self.info == \
-               self.users[self.users._key_with_prefix(self.user_id)]
+            self.users[self.users._key_with_prefix(self.user_id)]
 
     def test_from_to_json(self):
         self.users.from_json(self.json_filename)
@@ -59,8 +59,9 @@ class RedisUsersTest(TestCase):
     @mock.patch("redis.from_url")
     def test_from_url(self, mock_from_url):
         url = "redis_url"
-        users.RedisUsers.from_url(url)
-        mock_from_url.assert_called_with(url)
+        for cls_ in [users.RedisUsers, RedisDB]:
+            cls_.from_url(url)
+            mock_from_url.assert_called_with(url)
 
     def test_redis_db_keys(self):
         redis_db = RedisDB(self.db)
@@ -69,5 +70,3 @@ class RedisUsersTest(TestCase):
             'USER:590082058', 'USER:910081058', 'ALLOC:2018-06-25'
         }
         assert expected_keys == set(redis_db.keys)
-
-

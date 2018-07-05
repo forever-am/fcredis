@@ -1,8 +1,17 @@
+import redis
 from .base import RedisDB
 from .tag import UserInfoEnum
 
 
 class RedisUsers(RedisDB):
+
+    def __init__(self, db, salt=None):
+        super(RedisUsers, self).__init__(db)
+        self.salt = salt or "3268abddc"
+
+    @classmethod
+    def from_url(cls, url, salt=None):
+        cls(redis.from_url(url), salt)
 
     @property
     def keys(self):
