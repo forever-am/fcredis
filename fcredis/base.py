@@ -19,24 +19,29 @@ class RedisDB(object):
     def _prefix(self):
         return ""
 
-    def _key(self, user_id):
-        key = str(user_id)
+    def _key_with_prefix(self, key):
+        key = str(key)
         if not key.startswith(self._prefix):
             key = self._prefix + key
         return key
 
+    def _key_without_prefix(self, key):
+        if key.startswith(self._prefix):
+            key = key[len(self._prefix):]
+        return key
+
     def __contains__(self, user_id):
-        return self.db.exists(self._key(user_id))
+        return self.db.exists(self._key_with_prefix(user_id))
 
     def __getitem__(self, user_id):
-        result = self.db.get(self._key(user_id))
+        result = self.db.get(self._key_with_prefix(user_id))
         if result:
             return json.loads(result.decode())
 
     def add(self, key, info=None):
         user_info = self[key] or {}
         user_info.update(info or {})
-        self.db.set(self._key(key), json.dumps(user_info))
+        self.db.set(self._key_with_prefix(key), json.dumps(user_info))
 
     def to_dict(self):
         return {key: self[key] for key in self.keys}

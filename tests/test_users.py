@@ -27,10 +27,9 @@ class RedisUsersTest(TestCase):
 
     def test_add_and_getitem(self):
         self.users.add(self.user_id, self.info)
-        expected = dict(self.info)
-        expected[UserInfoEnum.USER_ID.lower()] = self.user_id
-        assert expected == self.users[self.user_id]
-        assert expected == self.users[self.users._key(self.user_id)]
+        assert self.info == self.users[self.user_id]
+        assert self.info == \
+               self.users[self.users._key_with_prefix(self.user_id)]
 
     def test_from_to_json(self):
         self.users.from_json(self.json_filename)

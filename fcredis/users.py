@@ -18,4 +18,4 @@ class RedisUsers(RedisDB):
         for key in self.keys:
             info = self[key]
             if info.get(UserInfoEnum.ACTIVE.lower(), False):
-                yield info[UserInfoEnum.USER_ID.lower()]
+                yield int(self._key_without_prefix(key))
