@@ -22,6 +22,7 @@ class UserInfoEnum(StrEnum):
     KRAKEN_PRIVATE_KEY = auto()
     NAME = auto()
     USER_ID = auto()
+    BASE_CURRENCY = auto()
     INDEX = auto()
     EXCHANGE = auto()
     ACTIVE = auto()
