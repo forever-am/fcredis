@@ -4,8 +4,6 @@ import rncryptor
 from .base import RedisDB
 from .tag import UserInfoEnum
 
-log = logging.getLogger(__name__)
-
 
 def _sensitive_fields(info):
     return UserInfoEnum.sensitive_fields().intersection(info.keys())
@@ -18,9 +16,10 @@ class RedisUsers(RedisDB):
         self.salt = salt
         if self.salt:
             self.salt = hashlib.sha256(str.encode(self.salt)).hexdigest()
+            logging.info("salt is set.")
         else:
-            log.info("No salt provided. It won't be possible to decrypt "
-                     "sensitive fields.")
+            logging.info("No salt provided. It won't be possible to "
+                         "decrypt sensitive fields.")
         self.cryptor = rncryptor.RNCryptor()
 
     @property
