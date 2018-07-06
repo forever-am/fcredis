@@ -74,17 +74,17 @@ class RedisUsersTest(TestCase):
     def test_add_and_get_sensitive_fields(self):
         info = dict(self.info)
         original_key = "123abc432"
-        info[UserInfoEnum.KRAKEN_PUBLIC_API_KEY.lower()] = original_key
+        info[UserInfoEnum.KRAKEN_API_KEY.lower()] = original_key
         self.users.add(self.user_id, info)
         users_without_salt = users.RedisUsers(self.users.db)
         info_encrypted = users_without_salt[self.user_id]
         encrypted_key = \
-            info_encrypted[UserInfoEnum.KRAKEN_PUBLIC_API_KEY.lower()]
+            info_encrypted[UserInfoEnum.KRAKEN_API_KEY.lower()]
         assert encrypted_key != original_key
         assert info_encrypted[UserInfoEnum.IS_KEY_ENCRYPTED.lower()]
 
         info_decrypted = self.users[self.user_id]
         decrypted_key = \
-            info_decrypted[UserInfoEnum.KRAKEN_PUBLIC_API_KEY.lower()]
+            info_decrypted[UserInfoEnum.KRAKEN_API_KEY.lower()]
         assert decrypted_key == original_key
         assert not info_decrypted[UserInfoEnum.IS_KEY_ENCRYPTED.lower()]

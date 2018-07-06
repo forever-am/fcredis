@@ -18,8 +18,8 @@ class StrEnum(Enum):
 
 @unique
 class UserInfoEnum(StrEnum):
-    KRAKEN_PUBLIC_API_KEY = auto()
-    KRAKEN_PRIVATE_API_KEY = auto()
+    KRAKEN_API_KEY = auto()
+    KRAKEN_PRIVATE_KEY = auto()
     NAME = auto()
     USER_ID = auto()
     INDEX = auto()
@@ -30,6 +30,6 @@ class UserInfoEnum(StrEnum):
     @classmethod
     def sensitive_fields(cls):
         return {
-            cls.KRAKEN_PUBLIC_API_KEY.lower(),
-            cls.KRAKEN_PRIVATE_API_KEY.lower()
+            cls.KRAKEN_API_KEY.lower(),
+            cls.KRAKEN_PRIVATE_KEY.lower()
         }
