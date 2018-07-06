@@ -48,7 +48,7 @@ class RedisUsers(RedisDB):
         if not info or not self.salt:
             return info
         sensitive_fields = _sensitive_fields(info)
-        if sensitive_fields:
+        if sensitive_fields and info[UserInfoEnum.IS_KEY_ENCRYPTED.lower()]:
             for field in sensitive_fields:
                 bytes_value = bytes.fromhex(info[field])
                 info[field] = self.cryptor.decrypt(bytes_value, self.salt)
@@ -57,6 +57,6 @@ class RedisUsers(RedisDB):
 
     def iter_active_users(self):
         for key in self.keys:
-            info = self[key]
+            info = super(RedisUsers, self).__getitem__(key)
             if info.get(UserInfoEnum.ACTIVE.lower(), False):
                 yield int(self._key_without_prefix(key))
