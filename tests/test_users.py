@@ -79,6 +79,10 @@ class RedisUsersTest(TestCase):
         assert encrypted_key != original_key
         assert info_encrypted[UserInfoEnum.IS_KEY_ENCRYPTED.lower()]
 
+        self.users.add(self.user_id, {})
+        info_encrypted2 = users_without_salt[self.user_id]
+        assert info_encrypted == info_encrypted2
+
         info_decrypted = self.users[self.user_id]
         decrypted_key = \
             info_decrypted[UserInfoEnum.KRAKEN_API_KEY.lower()]

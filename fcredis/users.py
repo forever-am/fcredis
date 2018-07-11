@@ -30,9 +30,12 @@ class Cryptor(object):
             return info
         crypt_map = {True: self.encrypt, False: self.decrypt}
         f_crypt = crypt_map[to_encrypt]
-        info_updated = {k: f_crypt(info[k]) for k in sensitive_fields_in_info}
-        info_updated[UserInfoEnum.IS_KEY_ENCRYPTED.lower()] = to_encrypt
-        info.update(info_updated)
+        is_encrypted = info.get(UserInfoEnum.IS_KEY_ENCRYPTED.lower(), False)
+        if is_encrypted != to_encrypt:
+            info_updated = {k: f_crypt(info[k])
+                            for k in sensitive_fields_in_info}
+            info_updated[UserInfoEnum.IS_KEY_ENCRYPTED.lower()] = to_encrypt
+            info.update(info_updated)
         return info
 
 
