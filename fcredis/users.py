@@ -5,10 +5,6 @@ from .base import RedisDB
 from .tag import UserInfoEnum
 
 
-def _sensitive_fields(info):
-    return UserInfoEnum.sensitive_fields().intersection(info.keys())
-
-
 class Cryptor(object):
     def __init__(self, salt):
         self.salt = salt
@@ -20,9 +16,6 @@ class Cryptor(object):
                          "decrypt sensitive fields.")
         self.cryptor = rncryptor.RNCryptor()
 
-    def __bool__(self):
-        return self.salt is not None
-
     def encrypt(self, value):
         bytes_value = self.cryptor.encrypt(value, self.salt)
         return bytes_value.hex()
@@ -30,6 +23,17 @@ class Cryptor(object):
     def decrypt(self, value):
         bytes_value = bytes.fromhex(value)
         return self.cryptor.decrypt(bytes_value, self.salt)
+
+    def update_sensitive_fields(self, sensitive_fields, info, to_encrypt=True):
+        sensitive_fields_in_info = sensitive_fields.intersection(info.keys())
+        if not sensitive_fields_in_info or not self.salt:
+            return info
+        crypt_map = {True: self.encrypt, False: self.decrypt}
+        f_crypt = crypt_map[to_encrypt]
+        info_updated = {k: f_crypt(info[k]) for k in sensitive_fields_in_info}
+        info_updated[UserInfoEnum.IS_KEY_ENCRYPTED.lower()] = to_encrypt
+        info.update(info_updated)
+        return info
 
 
 class RedisUsers(RedisDB):
@@ -50,24 +54,16 @@ class RedisUsers(RedisDB):
 
     def add(self, key, info=None):
         info = dict(info or {})
-        sensitive_fields = _sensitive_fields(info)
-        if sensitive_fields and self.cryptor:
-            result = {k: self.cryptor.encrypt(info[k])
-                      for k in sensitive_fields}
-            result[UserInfoEnum.IS_KEY_ENCRYPTED.lower()] = True
-            info.update(result)
+        info = self.cryptor.update_sensitive_fields(
+            UserInfoEnum.sensitive_fields(), info, True
+        )
         super(RedisUsers, self).add(key, info)
 
     def __getitem__(self, key):
         info = super(RedisUsers, self).__getitem__(key)
-        if not info or not self.cryptor:
-            return info
-        sensitive_fields = _sensitive_fields(info)
-        if sensitive_fields and info[UserInfoEnum.IS_KEY_ENCRYPTED.lower()]:
-            result = {k: self.cryptor.decrypt(info[k])
-                      for k in sensitive_fields}
-            result[UserInfoEnum.IS_KEY_ENCRYPTED.lower()] = False
-            info.update(result)
+        info = self.cryptor.update_sensitive_fields(
+            UserInfoEnum.sensitive_fields(), info, False
+        )
         return info
 
     def iter_active_users(self):

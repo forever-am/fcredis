@@ -37,6 +37,7 @@ class RedisDB(object):
         result = self.db.get(self._key_with_prefix(key))
         if result:
             return json.loads(result.decode())
+        return {}
 
     def add(self, key, info=None):
         user_info = self[key] or {}
