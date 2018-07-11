@@ -32,7 +32,7 @@ While the real key in the database is with a prefix `USER:`.
 You can use the methods `to_json, from_json, to_dict` to convert all the user data into the format you want.
 
 ```python
-print(users_without_salt.to_json())
+users_without_salt.to_dict()
 """
 {
   "USER:5236871": {

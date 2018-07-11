@@ -44,10 +44,6 @@ class RedisUsersTest(TestCase):
         assert expected_keys == result_json.keys()
         remove(filename)
 
-        s = self.users.to_json()
-        result_json_from_s = json.loads(s)
-        assert expected_keys == result_json_from_s.keys()
-
     def test_contains(self):
         self.users.from_json(self.json_filename)
         assert self.user_id in self.users

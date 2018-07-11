@@ -43,12 +43,6 @@ class RedisUsers(RedisDB):
         self.cryptor = Cryptor(salt)
 
     @property
-    def keys(self):
-        return list(filter(
-            lambda k: k.startswith(self._prefix), RedisDB.keys.fget(self)
-        ))
-
-    @property
     def _prefix(self):
         return "USER:"
 

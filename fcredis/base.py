@@ -13,7 +13,8 @@ class RedisDB(object):
 
     @property
     def keys(self):
-        return [k.decode() for k in self.db.keys()]
+        keys = [k.decode() for k in self.db.keys()]
+        return list(filter(lambda k: k.startswith(self._prefix), keys))
 
     @property
     def _prefix(self):
@@ -47,13 +48,10 @@ class RedisDB(object):
     def to_dict(self):
         return {key: self[key] for key in self.keys}
 
-    def to_json(self, filename=None):
+    def to_json(self, filename):
         result = self.to_dict()
         kwargs = dict(sort_keys=True, indent=2)
-        if filename:
-            json.dump(result, open(filename, "w"), **kwargs)
-        else:
-            return json.dumps(result, **kwargs)
+        json.dump(result, open(filename, "w"), **kwargs)
 
     def from_json(self, filename):
         result = json.load(open(filename, "r"))
