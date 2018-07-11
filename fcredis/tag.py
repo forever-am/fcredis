@@ -18,6 +18,7 @@ class StrEnum(Enum):
 
 @unique
 class UserInfoEnum(StrEnum):
+    KRAKEN_API_UPDATE_TIME = auto()
     KRAKEN_API_KEY = auto()
     KRAKEN_PRIVATE_KEY = auto()
     NAME = auto()
