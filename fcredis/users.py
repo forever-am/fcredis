@@ -14,15 +14,15 @@ class Cryptor(object):
         else:
             logging.info("No salt provided. It won't be possible to "
                          "decrypt sensitive fields.")
-        self.cryptor = rncryptor.RNCryptor()
+        self.rn_cryptor = rncryptor.RNCryptor()
 
     def encrypt(self, value):
-        bytes_value = self.cryptor.encrypt(value, self.salt)
+        bytes_value = self.rn_cryptor.encrypt(value, self.salt)
         return bytes_value.hex()
 
     def decrypt(self, value):
         bytes_value = bytes.fromhex(value)
-        return self.cryptor.decrypt(bytes_value, self.salt)
+        return self.rn_cryptor.decrypt(bytes_value, self.salt)
 
     def update_sensitive_fields(self, sensitive_fields, info, to_encrypt=True):
         sensitive_fields_in_info = sensitive_fields.intersection(info.keys())
