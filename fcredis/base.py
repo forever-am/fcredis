@@ -50,8 +50,7 @@ class RedisDB(object):
 
     def to_json(self, filename):
         result = self.to_dict()
-        kwargs = dict(sort_keys=True, indent=2)
-        json.dump(result, open(filename, "w"), **kwargs)
+        json.dump(result, open(filename, "w"), sort_keys=True, indent=2)
 
     def from_json(self, filename):
         result = json.load(open(filename, "r"))
