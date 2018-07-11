@@ -32,6 +32,7 @@ class Cryptor(object):
         f_crypt = crypt_map[to_encrypt]
         is_encrypted = info.get(UserInfoEnum.IS_KEY_ENCRYPTED.lower(), False)
         if is_encrypted != to_encrypt:
+            # to avoid encrypt the same information multiple times
             info_updated = {k: f_crypt(info[k])
                             for k in sensitive_fields_in_info}
             info_updated[UserInfoEnum.IS_KEY_ENCRYPTED.lower()] = to_encrypt
