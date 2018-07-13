@@ -15,3 +15,11 @@ script:
 after_success:
   - codecov
   - coveralls
+
+deploy:
+  provider: pypi
+  user: $PYPI_USERNAME
+  password: $PYPI_PASSWORD
+  on:
+    python: "3.5"
+    tags: true
