@@ -2,17 +2,9 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-def get_lines(filename):
-    with open(filename, "r") as f:
-        return [line.strip() for line in f.readlines()]
-
-
-install_requires = get_lines("requirements.txt")
-dev_requires = get_lines("requirements-dev.txt")
-
 setup(
     name="fcredis",
-    version='0.0.2',
+    version='0.0.2a',
     description='Redis API for users and allocation',
     long_description="",
     classifiers=[
@@ -31,6 +23,13 @@ setup(
     packages=find_packages(),
     include_package_data=False,
     zip_safe=False,
-    install_requires=install_requires,
-    extras_require={"test": dev_requires}
+    install_requires=[
+        "redis==2.10.6",
+        "rncryptor==3.2.0",
+    ],
+    extras_require={"test": [
+        "redis==2.10.6",
+        "rncryptor==3.2.0",
+        "fakeredis==0.11.0",
+    ]}
 )
