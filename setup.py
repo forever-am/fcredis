@@ -28,8 +28,8 @@ setup(
         "rncryptor==3.2.0",
     ],
     extras_require={"test": [
-        "redis==2.10.6",
-        "rncryptor==3.2.0",
+        "pytest==3.6.1",
+        "pytest-cov==2.5.1",
         "fakeredis==0.11.0",
     ]}
 )
