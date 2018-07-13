@@ -17,7 +17,7 @@ setup(
     long_description="",
     classifiers=[
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: GNU v3 License",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Topic :: Software Development :: Libraries",
@@ -27,7 +27,7 @@ setup(
     author='Alice Wang',
     author_email="alice.wang@forever-am.com",
     keywords='database, redis',
-    license="GNU v3",
+    license="GPLv3",
     packages=find_packages(),
     include_package_data=False,
     zip_safe=False,
