@@ -12,7 +12,7 @@ dev_requires = get_lines("requirements-dev.txt")
 
 setup(
     name="fcredis",
-    version='0.0.1',
+    version='0.0.2',
     description='Redis API for users and allocation',
     long_description="",
     classifiers=[
