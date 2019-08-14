@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="fcredis",
-    version='0.0.2a',
+    version='0.0.3',
     description='Redis API for users and allocation',
     long_description="",
     classifiers=[
@@ -25,7 +25,7 @@ setup(
     zip_safe=False,
     install_requires=[
         "redis==2.10.6",
-        "rncryptor==3.2.0",
+        "rncryptor==3.3.0",
     ],
     extras_require={"test": [
         "pytest==3.6.1",
